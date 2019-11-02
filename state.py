@@ -30,11 +30,15 @@ class State:
     def get_value(self,action):
         return self._q_table[action]
     
+    def get_values(self):
+        return self._q_table
+
     def set_value(self,action, value):
         self._q_table[action] = value
 
     def get_type(self):
         return self._state_type
+        
 
     def get_best_action(self,coordinates, shape):
         highest_value = -10000000000

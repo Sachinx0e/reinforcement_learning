@@ -10,7 +10,7 @@ class StateSpace:
         
         # create an array to hold the q values
         self._q_table = np.zeros(shape=(rows * columns,4))
-                
+
         # fill the state space with empty state
         state_element_index = 0
         for i in range(0,rows):
@@ -78,3 +78,53 @@ class StateSpace:
             return True
         else:
             return False
+
+    def get_policy(self):
+        # flatten the space
+        flattened_space = self._space.flatten()
+        policy = {}
+        shape = self.get_shape()
+        for state in flattened_space:
+            coordinates = self.get_coordinates(state)
+            position = StateSpace.to_position(coordinates)
+            policy[str(position)] = state.get_best_action(coordinates,shape).value
+
+        return policy
+
+    @staticmethod
+    def to_coordinates(position):
+        row = int(position/4)
+        column = int(position % 4) - 1
+        if column == -1:
+            column = 3
+        return (row,column)
+
+    @staticmethod
+    def to_position(coordinates):
+        row = coordinates[0]
+        column = coordinates[1]
+        position = (row * 4) + (column + 1)        
+        return position
+
+    def render(self):
+        shape = self.get_shape()
+        rows = shape[0]
+        columns = shape[1]
+        
+        for i in range(0,rows):
+            # create the state for this row
+            for j in range (0,columns):
+                position = StateSpace.to_position((i,j))
+                state = self.get_state(i,j)
+                render_item = position
+                if state.get_type() == StateType.GOAL:
+                    render_item = 'G'
+                elif state.get_type() == StateType.FORBIDDEN:
+                    render_item = 'F'
+                elif state.get_type() == StateType.WALL:
+                    render_item = 'W'
+
+                print("{0:^5}".format(render_item),end='')
+
+                if j == columns - 1:
+                    print("\n")

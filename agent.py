@@ -165,29 +165,6 @@ class Agent:
             clamped_coordinates = (coordinates[0], 0)
         return clamped_coordinates
 
-    def get_optimal_policy(self,start_state):
-        policy = []
-
-        is_goal = False
-        current_state = start_state
-        while not is_goal:
-
-            # get the best action for current state
-            coordinates = self._state_space.get_coordinates(current_state)   
-            action = current_state.get_best_action(coordinates,self._state_space.get_shape())
-            state_action = (current_state, action)
-            policy.append(state_action)
-
-            # get the next state based on current state and action
-            next_state = self.get_next_state(action,current_state)
-
-            # check if is goal
-            is_goal = next_state.get_type() == StateType.GOAL
-
-            current_state = next_state
-
-        return policy
-
 
 
 
